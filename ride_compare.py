@@ -21,6 +21,14 @@ def create_argument_parser():
 
 def lldist2d(origin, destination):
     '''
+    Compute the 2d distance based on the latitude and longitude of two points.
+    
+    Args:
+        origin, destination (tuples of floats): (latitude, longitude).
+        
+    Return:
+        2-d distance (ignoring elevation) in kilometers.
+    
     '''
     lat1, lon1 = origin
     lat2, lon2 = destination
@@ -34,6 +42,9 @@ def lldist2d(origin, destination):
     return d
     
 def dist2d(p0, p1):
+    '''
+    Compute Euclidean distance between two coordinates.
+    '''
     return math.sqrt((p1[0] - p0[0])**2 + (p1[0] - p0[0])**2)
 
 def read_gpx(file_name, start_loc, end_loc):
@@ -66,9 +77,6 @@ def read_gpx(file_name, start_loc, end_loc):
     return data[start:end] - data[start]
 
 def play(trajs, names, speed, save):
-    '''
-    interval (float): The pause between two frames in millisecond.
-    '''
     # Create the figure
     fig = plt.figure()
     spec = gridspec.GridSpec(ncols=2, nrows=1, width_ratios=[2, 1])
@@ -82,7 +90,8 @@ def play(trajs, names, speed, save):
     locs = []
     for name, traj in zip(names, trajs):
         ax0.plot(traj[:, 2], traj[:, 1], label=name)
-        loc, = ax0.plot(traj[0, 2], traj[0, 1], 'ro')
+        c = ax0.get_lines()[-1].get_color()
+        loc, = ax0.plot(traj[0, 2], traj[0, 1], 'o', color=c)
         locs.append(loc)
     
     # Create elevation plot
@@ -93,7 +102,8 @@ def play(trajs, names, speed, save):
     eles = []
     for name, traj in zip(names, trajs):
         ax1.plot(traj[:, 3], traj[:, 4], label=name)
-        ele, = ax1.plot(traj[0, 3], traj[0, 4], 'ro')
+        c = ax1.get_lines()[-1].get_color()
+        ele, = ax1.plot(traj[0, 3], traj[0, 4], 'o', color=c)
         eles.append(ele)
     
     def animate(i):
@@ -106,6 +116,7 @@ def play(trajs, names, speed, save):
         return locs + eles
         
     frames = max([len(traj) for traj in trajs])
+    # interval (float): The pause between two frames in millisecond.
     interval = (trajs[0][1, 0] - trajs[0][0, 0]).total_seconds() * 1000 / speed
     # call the animator.  blit=True means only re-draw the parts that have changed.
     anim = animation.FuncAnimation(fig, animate, frames=frames, interval=interval, blit=True)
