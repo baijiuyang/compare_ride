@@ -20,7 +20,7 @@ gpxpy
 
 
 # Command line arguments:
---filename: the name(s) or gpx file(s)
+--filename: the name(s) of gpx file(s)
 
 --startloc, --endloc: the latitude and longitude or the start and end location for animation (can be acquired on google map, do not need to be on the gpx path) 
 
